@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TCY版（T版）后室 官方档案站点</title>
+    <title>T版(TCY版)后室官方档案站点</title>
     <style>
         * {
             margin: 0;
@@ -15,41 +15,107 @@
             background-color: #121417;
             color: #e6e6e6;
             line-height: 1.7;
-            padding: 20px;
         }
-        header {
-            text-align: center;
-            border-bottom: 1px solid #444;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+
+        /* ========== 顶部导航栏 ========== */
+        .top-nav {
+            background: #1a1f25;
+            border-bottom: 1px solid #333;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        h1 {
-            color: #7cb9ff;
-            margin-bottom: 8px;
-        }
-        .nav-box {
+        .top-nav-inner {
+            max-width: 1100px;
+            margin: 0 auto;
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
-            margin-bottom: 40px;
+            align-items: center;
+            padding: 0;
         }
-        .nav-btn {
-            padding: 8px 16px;
+        .site-title {
+            color: #7cb9ff;
+            font-size: 1.1em;
+            font-weight: bold;
+            padding: 12px 20px;
+            white-space: nowrap;
+            border-right: 1px solid #333;
+            text-decoration: none;
+        }
+        .site-title:hover {
             background: #253344;
-            border: 1px solid #5078a0;
-            border-radius: 4px;
-            color: #b8d8f8;
+        }
+        .tab-group {
+            display: flex;
+            flex: 1;
+        }
+        .tab-btn {
+            padding: 12px 20px;
+            background: transparent;
+            border: none;
+            border-right: 1px solid #333;
+            color: #ccc;
             cursor: pointer;
+            font-size: 0.95em;
             transition: 0.2s;
             white-space: nowrap;
+            position: relative;
         }
-        .nav-btn:hover {
+        .tab-btn:hover {
+            background: #253344;
+            color: #fff;
+        }
+        .tab-btn.active {
+            background: #1e2d3d;
+            color: #94c8ff;
+            border-bottom: 3px solid #5098e6;
+        }
+
+        /* ========== 下拉菜单 ========== */
+        .dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: #1e2d3d;
+            border: 1px solid #3a5068;
+            border-top: none;
+            min-width: 200px;
+            z-index: 200;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+        }
+        .tab-btn.active .dropdown {
+            display: block;
+        }
+        .dropdown-item {
+            display: block;
+            width: 100%;
+            padding: 10px 20px;
+            background: transparent;
+            border: none;
+            color: #b8d8f8;
+            cursor: pointer;
+            text-align: left;
+            font-size: 0.9em;
+            transition: 0.15s;
+            white-space: nowrap;
+        }
+        .dropdown-item:hover {
             background: #304863;
+            color: #fff;
+        }
+        .dropdown-item.active-sub {
+            background: #253344;
+            color: #94c8ff;
+            border-left: 3px solid #5098e6;
+        }
+
+        /* ========== 主内容区 ========== */
+        .main-content {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
         }
         .content-block {
-            max-width: 1000px;
-            margin: 0 auto;
             display: none;
         }
         .content-block.active {
@@ -75,126 +141,228 @@
             padding: 10px 14px;
             margin: 15px 0;
         }
+        .entity-img {
+            max-width: 300px;
+            border: 1px solid #444;
+            margin: 10px 0;
+            display: block;
+        }
+        .zone-img {
+            max-width: 100%;
+            border: 1px solid #444;
+            margin: 10px 0;
+            display: block;
+        }
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 768px) {
+            .top-nav-inner {
+                flex-wrap: wrap;
+            }
+            .tab-btn {
+                padding: 10px 12px;
+                font-size: 0.8em;
+            }
+            .site-title {
+                font-size: 0.9em;
+                padding: 10px 12px;
+            }
+        }
     </style>
 </head>
 <body>
-    <header>
-        <h1>TCY版（T版）后室 · 官方档案站点</h1>
-        <p>基准现实时间：2026年</p>
-    </header>
 
-    <div class="nav-box">
-        <button class="nav-btn" onclick="showPage('home')">站点首页总览</button>
-        <button class="nav-btn" onclick="showPage('threshold')">阈限研究所（阈限公司）</button>
-        <button class="nav-btn" onclick="showPage('async-local')">本土Async异步公司</button>
-        <button class="nav-btn" onclick="showPage('async-1990')">1990平行时空Async</button>
-        <button class="nav-btn" onclick="showPage('mingzhou')">明州共和国</button>
-        <button class="nav-btn" onclick="showPage('space-rule')">T版空间架构规则</button>
-        <button class="nav-btn" onclick="showPage('video-archive')">影像档案体系</button>
-        <button class="nav-btn" onclick="showPage('entity')">实体与环境威胁</button>
-    </div>
+    <!-- ==================== 顶部导航 ==================== -->
+    <nav class="top-nav">
+        <div class="top-nav-inner">
+            <a href="#" class="site-title" onclick="showPage('home'); resetTabs(); return false;">T版后室档案站</a>
+            <div class="tab-group">
+                <!-- 底层设定 -->
+                <div class="tab-btn" id="tab-bottom" onclick="toggleTab('bottom')">
+                    底层设定
+                    <div class="dropdown" id="dropdown-bottom">
+                        <button class="dropdown-item active-sub" onclick="showPage('home'); setActiveSub(this);">站点首页总览</button>
+                        <button class="dropdown-item" onclick="showPage('threshold'); setActiveSub(this);">阈限研究所</button>
+                        <button class="dropdown-item" onclick="showPage('async-local'); setActiveSub(this);">Async异步公司</button>
+                        <button class="dropdown-item" onclick="showPage('space-rule'); setActiveSub(this);">空间架构规则</button>
+                        <button class="dropdown-item" onclick="showPage('video-archive'); setActiveSub(this);">影像档案体系</button>
+                    </div>
+                </div>
+                <!-- 区域档案 -->
+                <div class="tab-btn" id="tab-zone" onclick="toggleTab('zone')">
+                    区域档案
+                    <div class="dropdown" id="dropdown-zone">
+                        <button class="dropdown-item" onclick="showPage('zone0'); setActiveSub(this);">区域0</button>
+                        <button class="dropdown-item" onclick="showPage('zone1'); setActiveSub(this);">区域1</button>
+                        <button class="dropdown-item" onclick="showPage('cross-zone'); setActiveSub(this);">跨界异常交融区</button>
+                    </div>
+                </div>
+                <!-- 实体档案 -->
+                <div class="tab-btn" id="tab-entity" onclick="toggleTab('entity')">
+                    实体档案
+                    <div class="dropdown" id="dropdown-entity">
+                        <button class="dropdown-item" onclick="showPage('entity-bacteria'); setActiveSub(this);">细菌</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
 
-    <!-- 首页 -->
-    <div id="home" class="content-block active">
-        <h2>世界观总介绍</h2>
-        <p>TCY版后室（简称T版后室），是以Kane Pixels（K版）影像后室为原型创作的独立平行衍生宇宙，整体基调偏向纪实探索，恐怖程度较低，拥有原创势力、区域制空间、跨维度文明与跨版本空间交融设定。</p>
-        <div class="note">全域时间紊乱成因暂未探明；W版、F版交融区域判定为空间碰撞临时产物，不属于T版原生空间。</div>
-        <h3>站点使用说明</h3>
-        <p>点击上方导航按钮切换不同分类档案，所有内容均为T版官方设定文本，可直接用于站点公开展示。</p>
-    </div>
+    <!-- ==================== 主内容区 ==================== -->
+    <div class="main-content">
 
-    <!-- 阈限研究所 -->
-    <div id="threshold" class="content-block">
-        <h2>阈限研究所（对外俗称：阈限公司）</h2>
-        <h3>基础信息</h3>
-        <p>创立时间：2023年，由一批关注Async外流后室影像的民间科研爱好者自发组建，是T版本土核心科研组织。</p>
-        <p>核心行动：自主研发搭建稳定后室传送通道，系统性勘探全域、整理归档资料，依靠闯入者投稿影像绘制全域区域地图。</p>
-        <h3>圈内知名事件</h3>
-        <p>研究所一名行事出格的研究员，携带大量补给物资，不惜长途跋涉数千公里，目的仅仅是抵达本土Async公司正门敲门恶作剧惊扰对方，事后直接开走一辆从Async场地内顺手取用的车辆返程，该车辆来源至今没有定论，此事成为研究所流传最广的趣味轶事。</p>
-        <h3>专项研究项目</h3>
-        <p>长期记录明州共和国人员、平行时空Async、跨界异常空间三类外来事件档案。</p>
-    </div>
+        <!-- 首页 -->
+        <div id="home" class="content-block active">
+            <h2>世界观总介绍</h2>
+            <p>T版后室（TCY版后室），是以Kane Pixels（K版）影像后室为原型创作的独立平行衍生宇宙，整体基调偏向纪实探索，恐怖程度较低，拥有原创势力和同样为区域制空间的设定。</p>
+            <div class="note">T版后室同样时间可能会有紊乱，原因不说，因为我也没想好。</div>
+            <h3>站点使用说明</h3>
+            <p>点击上方导航按钮切换不同分类档案</p>
+        </div>
 
-    <!-- 本土Async -->
-    <div id="async-local" class="content-block">
-        <h2>T版本土 Async异步公司</h2>
-        <h3>存续状态</h3>
-        <p>2026年依旧合法注册存续，但建筑大面积空置，整体处于近乎半废弃状态。</p>
-        <h3>人员构成</h3>
-        <p>仅留存极少留守人员驻守办公，日常仅有数人在此休憩。</p>
-        <h3>特有产物</h3>
-        <p>旧址周边诞生T版本土唯一原生实体——细菌实体，战力十分低下，常规枪械数发即可击杀，甚至有人将其躯体直接拿来当作签子串肉制作烤串。</p>
-    </div>
+        <!-- 阈限研究所 -->
+        <div id="threshold" class="content-block">
+            <h2>阈限研究所（对外俗称阈限公司）</h2>
+            <img src="yx.png" alt="阈限研究所" class="zone-img">
+            <h3>基础信息</h3>
+            <p>创立时间：2023年，一批关注Async外流后室影像的民间科研爱好者搞出来的公司，是T版本土核心科研组织。</p>
+            <p>目的：看看后室长啥样，顺便再看看能不能利用后室赚点小钱钱。</p>
+            <h3>圈内知名事件</h3>
+            <p>研究所一个不知道咋想的研究员，不惜跨越千里，来到异步研究所的门口，敲了几下门，吓了一下里面的人后，便偷走了一辆小车车跑路了。</p>
+            <h3>专项研究项目</h3>
+            <p>探索后室看看能不能赚点小钱钱</p>
+        </div>
 
-    <!-- 1990平行Async -->
-    <div id="async-1990" class="content-block">
-        <h2>1990年代平行时空 Async异步公司</h2>
-        <p>由T版全域时空畸变投射而来的独立平行机构，时间线永久固定在1990年，与2026本土Async无任何隶属关系，仅机构名称与职能一致，属于时间切片交错现象。</p>
-        <p>该组织仅作为时空异常观测档案记录，暂未建立稳定交流渠道。</p>
-    </div>
+        <!-- 本土Async -->
+        <div id="async-local" class="content-block">
+            <h2>T版的Async异步公司</h2>
+            <img src="yb.png" alt="Async" class="zone-img">
+            <h3>存续状态</h3>
+            <p>2026年依旧合法注册存续但整体处于近乎半废弃状态。</p>
+            <h3>人员构成</h3>
+            <p>没多少人在里面办公，甚至也有说法说只是做做样子，实际上已经停止了研究，当然这是谣言，异步公司还在研究后室，但不多</p>
+        </div>
 
-    <!-- 明州共和国 -->
-    <div id="mingzhou" class="content-block">
-        <h2>跨维度主权势力：明州共和国</h2>
-        <p>不属于地球现实文明，是拥有完整国家体制、自主后室探索体系的异维度主权国家，派遣人员全部为官方在编工作人员，几乎无民间探索者。</p>
-        <h3>后室发现时间</h3>
-        <p>2026年3月，属于很晚才观测到后室空间存在的文明。</p>
-        <h3>星球级侵蚀背景</h3>
-        <p>明州共和国所在的整颗星球都受到后室空间重度侵蚀，侵蚀烈度远高于地球；国内曾发生整座城市集体Noclip坠入后室的重大灾变事件。</p>
-        <h3>安全区兴衰历史</h3>
-        <p>初期依托自建传送通道在后室搭建官方安全定居区，用于安置失踪人口与勘探队员；后续安全区长期被细菌实体持续骚扰，加上当时T版后室空间并未稳定，安全区彻底崩溃，最终被官方主动拆除废弃。</p>
-        <p>现状：即便安全区消失，该国依旧持续派遣官方人员进入T版后室执行勘探与调查任务，经常跟阈限公司的员工聊天，双方文化均源自中华文化体系。</p>
-    </div>
+        <!-- 空间规则 -->
+        <div id="space-rule" class="content-block">
+            <h2>T版后室空间架构规则</h2>
+            <h3>核心模式：区域制</h3>
+            <p>后室整体为连贯的阈限空间，我们划分为不同的区域；区域之间存在肉眼可见隔墙，也有可能没有隔墙，区域之间的隔墙可以直接走过去。</p>
+            <h3>全域时间异常</h3>
+            <p>时序错乱现象无规律发生，例如标注拍摄于2026年7月7日的录像，会在后室内部时间2024年8月2日被回收，原理不知道。</p>
+        </div>
 
-    <!-- 空间规则 -->
-    <div id="space-rule" class="content-block">
-        <h2>T版后室空间架构规则</h2>
-        <h3>核心模式：区域制（摒弃传统Level层级）</h3>
-        <p>后室整体为连贯的阈限空间，划分为不同独立区域；区域之间存在肉眼可见隔墙，墙体仅作为视觉分界，常态下可以直接穿行。</p>
-        <h3>跨界异常交融区（非原生空间）</h3>
-        <p>受全域时空混乱产生的临时碰撞地带，不属于T版原生版图：</p>
-        <p>1. 部分区域可稳定连通Wikidot（W版）后室层群</p>
-        <p>2. 部分区域可稳定连通Fandom（F版）后室层群</p>
-        <p>出入口位置会缓慢漂移，稳定性较差，属于高危观测点位。</p>
-        <h3>全域时间异常</h3>
-        <p>时序错乱现象无规律发生，例如标注拍摄于2026年7月7日的录像，会在后室内部时间2024年8月2日被回收，原理暂时无法探明。</p>
-    </div>
+        <!-- 影像档案 -->
+        <div id="video-archive" class="content-block">
+            <h2>T版后室影像档案体系</h2>
+            <h3>闯入人群结构</h3>
+            <p>闯入主体以成年普通流浪者为主，青少年为次要闯入群体。</p>
+            <h3>影像产出逻辑</h3>
+            <p>成年人日常极少随身携带摄像设备，最终仅留存唯一一份成人原生录像孤本；青少年好奇心更强、乐于主动拍摄探索过程，是后室影像素材的核心来源。</p>
+            <h3>影像流出方式</h3>
+            <p>绝大多数闯入者都活了下来，大部分影像为幸存者主动投稿公开，也有录像的持有者失踪只留下了一个相机在原地，我们甚至连相机是不是在他原本的位置上都不知道。</p>
+            <h3>档案分类</h3>
+            <p>青少年主流投稿影像和意外寻到的录像。</p>
+        </div>
 
-    <!-- 影像档案 -->
-    <div id="video-archive" class="content-block">
-        <h2>T版后室影像档案体系</h2>
-        <h3>闯入人群结构</h3>
-        <p>闯入主体以成年普通流浪者为主，青少年为次要闯入群体。</p>
-        <h3>影像产出逻辑</h3>
-        <p>成年人日常极少随身携带摄像设备，最终仅留存唯一一份成人原生录像孤本；青少年好奇心更强、乐于主动拍摄探索过程，是后室影像素材的核心来源。</p>
-        <h3>影像流出方式</h3>
-        <p>绝大多数闯入者都可以自主意外脱离后室返回前厅，所有影像均为幸存者主动投稿公开，不存在机构被动泄露录像。</p>
-        <h3>档案分类</h3>
-        <p>青少年主流投稿影像、稀有成人孤本录像、时空错位异常录像、外来势力目击档案。</p>
-    </div>
+        <!-- 区域0 -->
+        <div id="zone0" class="content-block">
+            <h2>区域0（Zone 0）</h2>
+            <img src="z0.png" alt="区域0" class="zone-img">
+            <h3>环境描述</h3>
+            <p>根据调查来看，外观与W版和F版所记载的Level 0高度相似，当然了，W版指的是老版本的Level 0也就是教学关卡而不是现在的阈界，这你们应该也能看出来区域一整体就是那该死的黄色壁纸和潮湿的黄色地毯以及那该死的黄色的天花板，天花板的灯应该是日光灯，像是个圆形，不过看着挺小，是真的很吵，听着想让人把它们给拆了，虽然的确也能拆掉。</p>
+            <h3>已确认威胁：精神污染现象和饿死与渴死</h3>
+            <p>精神污染，很直白的名字，它的主要来源就两种：</p>
+            <p>1. 红色光：多名闯入者回收影像证实，被红光照射约10分钟会疯掉然后撞墙把自己撞死，但至于为什么我们也不清楚。</p>
+            <p>2. 完全黑暗的区域：这其实很合理，在现实中一直待在黑暗的区域也会疯掉的，不过在这里可以确定的是它属于精神污染，因为它同样是10分钟就会疯掉，这绝对不正常，因此我们认为它是精神污染，不过也就10个人因此而死，因为完全黑暗的区域太少见了，一盏灯灭了其他地方的灯一般也能弥补这个黑掉的灯。</p>
+            <h3>资源勘探结论</h3>
+            <p>研究所多次探索确认区域0几乎没有可获取的食物和水源，特别容易饿死和渴死，不过运气够好可以拿到一些后室模仿现实搞出来的东西，比如说汉堡或可乐，或者是家常菜，比如说可乐鸡翅什么的，但它们往往很难吃…</p>
+        </div>
 
-    <!-- 实体与威胁 -->
-    <div id="entity" class="content-block">
-        <h2>实体与环境威胁设定</h2>
-        <h3>原生区域实体情况</h3>
-        <p>T版绝大多数已探明原生区域几乎没有主动狩猎型原生实体，整体偏向低威胁纪实探索风格。</p>
-        <h3>本土唯一实体</h3>
-        <p>仅本土Async旧址周边存在细菌实体，战斗力极低，常规枪械即可快速击杀，甚至会被流浪者拿来充当烤串签使用。</p>
-        <h3>主要威胁来源</h3>
-        <p>常规威胁：长期环境带来的精神干扰和水资源或食物短缺；</p>
-        <p>跨界交融区：附带W版、F版后室特有危险；</p>
-        <p>原明州共和国安全区旧址：依旧残留曾经骚扰驻地的细菌实体。</p>
+        <!-- 区域1 -->
+        <div id="zone1" class="content-block">
+            <h2>区域1（Zone 1）</h2>
+            <img src="z1.png" alt="区域1" class="zone-img">
+            <h3>环境概述</h3>
+            <p>它可以从区域0直接到达，但是一般都会有个隔墙，不过很明显的！区域一的墙壁是混凝土制作的，并且会有一些很细的柱子规律的在空间中排列，区域0能够前往区域1的墙也是混凝土做的，所以你可以直接找到，区域0经常出现可以前往区域1的墙！想到区域一，你要做的就是直接朝那个墙走去，因为是能够直接穿过它的，区域一切出回到现实的概率也比区域0要大上不少。</p>
+            <h3>威胁评估</h3>
+            <p>目前来看只有饥饿和脱水主要威胁。不过实际上不太可能有人饥饿和脱水，因为这里食物太多了！</p>
+            <h3>食物和水</h3>
+            <p>一共有两种，一种是现实世界掉进去的食物还有水，这种挺少见，区域一大部分的食物和水都是后室试图模仿现实世界的时候搞出来的，前面说过了，区域一更经常生成一些超级好吃的食物，比如说远超于现实世界的美味的汉堡可乐鸡翅或者…算了，不说了，再说就要饿了，这些食物完全没有副作用，或者说有，就是你容易吃撑，别吃撑了！吃饱喝足后，就可以去放心的找回到区域0或者前往现实世界的那堵墙了，你也可以顺一点食物回现实世界吃。</p>
+            <h3>实体</h3>
+            <p>已知的实体只有细菌，关于细菌的介绍可以去实体分类看</p>
+        </div>
+
+        <!-- 跨界异常交融区 -->
+        <div id="cross-zone" class="content-block">
+            <h2>跨界异常交融区（非原生空间）</h2>
+            <h3>概述</h3>
+            <p>所有区域都有一个特点：</p>
+            <p>1. 部分区域可稳定连通Wikidot（W版）后室层群</p>
+            <p>2. 部分区域可稳定连通Fandom（F版）后室层群</p>
+            <p>出入口位置谁也不确定会不会变，但是只有在W或F版有对应层级的才可能会有这种问题，比如说区域0可能会到达W或F版的Level 0，某个区域在F或W版没有对应的话，则不会受此影响</p>
+        </div>
+
+        <!-- 细菌 -->
+        <div id="entity-bacteria" class="content-block">
+            <p>目前阈限研究所已收录的影像中无该实体出现，此处使用异步公司的图片<p>
+            <img src="xj.png" alt="细菌" class="zone-img">
+            <h2>细菌</h2>
+            <h3>细菌的介绍</h3>
+            <p>不同于K版、 T版的细菌战斗力极低，常规枪械即可快速击杀，也可以用棍棒击倒后用刀拆解击杀，细菌也出现过被流浪者拿来充当烤串签使用的情况。</p>
+        </div>
+
     </div>
 
     <script>
+        let currentTab = 'bottom';
+
+        function toggleTab(tabName) {
+            // 关闭所有下拉
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            // 打开当前
+            const tab = document.getElementById('tab-' + tabName);
+            if (currentTab === tabName) {
+                // 再次点击同一个，关闭
+                currentTab = '';
+                tab.classList.remove('active');
+            } else {
+                currentTab = tabName;
+                tab.classList.add('active');
+            }
+        }
+
         function showPage(id) {
-            // 隐藏所有板块
             document.querySelectorAll('.content-block').forEach(block => {
                 block.classList.remove('active');
             });
-            // 显示目标板块
             document.getElementById(id).classList.add('active');
         }
+
+        function setActiveSub(el) {
+            // 移除同一下拉菜单中所有active-sub
+            const dropdown = el.parentElement;
+            dropdown.querySelectorAll('.dropdown-item').forEach(item => {
+                item.classList.remove('active-sub');
+            });
+            el.classList.add('active-sub');
+            // 关闭下拉菜单
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            currentTab = '';
+        }
+
+        function resetTabs() {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            currentTab = '';
+        }
+
+        // 点击页面其他地方关闭下拉
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.tab-btn')) {
+                document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+                currentTab = '';
+            }
+        });
     </script>
 </body>
 </html>
